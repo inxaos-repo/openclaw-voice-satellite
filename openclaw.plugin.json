@@ -1,0 +1,89 @@
+{
+  "id": "voice-satellite",
+  "name": "Voice Satellite",
+  "description": "Local voice assistant satellites via Home Assistant Wyoming protocol. Routes voice transcripts to the agent session for unified context across voice, Telegram, and Discord.",
+  "version": "0.1.0",
+  "channels": ["voice-satellite"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "bridgePort": {
+        "type": "number",
+        "default": 8050,
+        "description": "HTTP port for the OpenAI-compatible bridge endpoint"
+      },
+      "ownerChatId": {
+        "type": "string",
+        "description": "Telegram chat ID of the owner (for unified session routing)"
+      },
+      "satellites": {
+        "type": "object",
+        "description": "Registered voice satellites keyed by satellite ID",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Human-readable satellite name"
+            },
+            "room": {
+              "type": "string",
+              "description": "Room where the satellite is located"
+            },
+            "haEntityId": {
+              "type": "string",
+              "description": "Home Assistant entity ID for this satellite"
+            }
+          }
+        }
+      },
+      "tts": {
+        "type": "object",
+        "properties": {
+          "engine": {
+            "type": "string",
+            "enum": ["xtts", "piper"],
+            "default": "xtts"
+          },
+          "xttsUrl": {
+            "type": "string",
+            "default": "http://192.168.2.25:8020"
+          },
+          "piperUrl": {
+            "type": "string",
+            "default": "http://192.168.2.25:10500"
+          },
+          "voiceRef": {
+            "type": "string",
+            "default": "/data/bob-marsters.wav"
+          }
+        }
+      },
+      "responseRouting": {
+        "type": "object",
+        "properties": {
+          "maxVoiceWords": {
+            "type": "number",
+            "default": 30,
+            "description": "Responses longer than this redirect details to Telegram"
+          },
+          "alwaysEchoToTelegram": {
+            "type": "boolean",
+            "default": false,
+            "description": "Always send a copy to Telegram"
+          },
+          "archiveLongResponses": {
+            "type": "boolean",
+            "default": true,
+            "description": "Write long responses to Wiki.js Archives"
+          }
+        }
+      }
+    }
+  }
+}
